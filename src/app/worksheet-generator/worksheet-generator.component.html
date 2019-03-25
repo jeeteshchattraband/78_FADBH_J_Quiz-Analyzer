@@ -1,0 +1,223 @@
+<div class="worksheet">
+  <div class="worksheet-sidebar mat-elevation-z5 d-print-none">
+    <form #optionsForm="ngForm">
+      <md-card class="worksheet-options mat-elevation-z0">
+        <md-card-title>
+          Worksheet Options
+        </md-card-title>
+        <md-card-subtitle>
+          Adjust the options for the worksheet
+        </md-card-subtitle>
+        <md-card-content>
+          <md-accordion>
+            <md-expansion-panel class="worksheet-options__panel-problem-options mat-elevation-z0" expanded="true">
+              <md-expansion-panel-header>
+                <md-panel-title>
+                  Problem Type Options
+                </md-panel-title>
+              </md-expansion-panel-header>
+              <md-form-field>
+                <input mdInput #problemCount="ngModel" type="number" placeholder="Number of Problems" name="problemCount" value="20" required [(ngModel)]="worksheetService.options.problemCount">
+                <md-error [hidden]="problemCount.valid || problemCount.pristine">
+                  Number of Problems must be provided
+                </md-error>
+              </md-form-field>
+              <div class="worksheet-options__problem-type" [class.worksheet-options__problem-type--enabled]="worksheetService.options.additionOptions.enabled">
+                <md-slide-toggle color="primary" name="additionEnabled" [(ngModel)]="worksheetService.options.additionOptions.enabled">Addition</md-slide-toggle>
+                <div *ngIf="worksheetService.options.additionOptions.enabled">
+                  Number of addends
+                  <br>
+                  <md-slider color="primary" min="2" max="5" [value]="numberOfAddends" (input)="numberOfAddendsSliderChange($event)"></md-slider> {{numberOfAddends}}
+                  <div class="worksheet-option__range-min-max" *ngFor="let addend of worksheetService.options.additionOptions.addendRanges; index as i">
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Addend {{i+1}} Minimum" name="addend-{{i}}-min" required [(ngModel)]="addend.min">
+                    </md-form-field>
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Maximum" name="addend-{{i}}-max" required [(ngModel)]="addend.max">
+                    </md-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="worksheet-options__problem-type" [class.worksheet-options__problem-type--enabled]="worksheetService.options.subtractionOptions.enabled">
+                <md-slide-toggle color="primary" name="subtractionEnabled" [(ngModel)]="worksheetService.options.subtractionOptions.enabled">Subtraction</md-slide-toggle>
+                <div *ngIf="worksheetService.options.subtractionOptions.enabled">
+                  <div class="worksheet-option__range-min-max">
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Minuend Minimum" name="minuend-min" required [(ngModel)]="worksheetService.options.subtractionOptions.minuendRange.min">
+                    </md-form-field>
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Maximum" name="minuend-max" required [(ngModel)]="worksheetService.options.subtractionOptions.minuendRange.max">
+                    </md-form-field>
+                  </div>
+                  Number of subtrahends
+                  <br>
+                  <md-slider color="primary" min="1" max="4" [value]="numberOfSubtrahends" (input)="numberOfSubtrahendsSliderChange($event)"></md-slider> {{numberOfSubtrahends}}
+                  <div class="worksheet-option__range-min-max" *ngFor="let subtrahend of worksheetService.options.subtractionOptions.subtrahendRanges; index as i">
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Subtrahend {{i+1}} Minimum" name="subtrahend-{{i}}-min" required [(ngModel)]="subtrahend.min">
+                    </md-form-field>
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Maximum" name="subtrahend-{{i}}-max" required [(ngModel)]="subtrahend.max">
+                    </md-form-field>
+                  </div>
+                  <md-slide-toggle color="warn" name="allowNegativeAnswers" [(ngModel)]="worksheetService.options.subtractionOptions.allowNegativeAnswers">Allow negative answers</md-slide-toggle>
+                </div>
+              </div>
+              <div class="worksheet-options__problem-type" [class.worksheet-options__problem-type--enabled]="worksheetService.options.multiplicationOptions.enabled">
+                <md-slide-toggle color="primary" name="multiplicationEnabled" [(ngModel)]="worksheetService.options.multiplicationOptions.enabled">Multiplication</md-slide-toggle>
+                <div *ngIf="worksheetService.options.multiplicationOptions.enabled">
+                  Number of factors
+                  <br>
+                  <md-slider color="primary" min="2" max="5" [value]="numberOfFactors" (input)="numberOfFactorsSliderChange($event)"></md-slider> {{numberOfFactors}}
+                  <div class="worksheet-option__range-min-max" *ngFor="let factor of worksheetService.options.multiplicationOptions.factorRanges; index as i">
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Factor {{i+1}} Minimum" name="factor-{{i}}-min" required [(ngModel)]="factor.min">
+                    </md-form-field>
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Maximum" name="factor-{{i}}-max" required [(ngModel)]="factor.max">
+                    </md-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="worksheet-options__problem-type" [class.worksheet-options__problem-type--enabled]="worksheetService.options.divisionOptions.enabled">
+                <md-slide-toggle color="primary" name="divisionEnabled" [(ngModel)]="worksheetService.options.divisionOptions.enabled">Division</md-slide-toggle>
+                <div *ngIf="worksheetService.options.divisionOptions.enabled">
+                  <div class="worksheet-option__range-min-max">
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Divisor Minimum" name="divisor-min" required [(ngModel)]="worksheetService.options.divisionOptions.divisorRange.min">
+                    </md-form-field>
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Maximum" name="divisor-max" required [(ngModel)]="worksheetService.options.divisionOptions.divisorRange.max">
+                    </md-form-field>
+                  </div>
+                  <div class="worksheet-option__range-min-max">
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Dividend Minimum" name="dividend-min" required [(ngModel)]="worksheetService.options.divisionOptions.dividendRange.min">
+                    </md-form-field>
+                    <md-form-field>
+                      <input mdInput type="number" placeholder="Maximum" name="dividend-max" required [(ngModel)]="worksheetService.options.divisionOptions.dividendRange.max">
+                    </md-form-field>
+                  </div>
+                  <md-slide-toggle color="warn" name="divisionDecimalsEnabled" (change)="showDecimalsChange($event)" [(ngModel)]="worksheetService.options.divisionOptions.showDecimals">Show decimals</md-slide-toggle>
+                  <div *ngIf="worksheetService.options.divisionOptions.showDecimals">
+                    Decimal places
+                    <br>
+                    <md-slider color="warn" min="0" max="5" [value]="numberOfDecimals" (input)="numberOfDecimalsSliderChange($event)"></md-slider> {{numberOfDecimals}}
+                  </div>
+                  <br>
+                  <md-slide-toggle color="warn" name="divisionRemaindersEnabled" (change)="showRemaindersChange($event)" [(ngModel)]="worksheetService.options.divisionOptions.showRemainders">Show remainders</md-slide-toggle>
+                </div>
+              </div>
+            </md-expansion-panel>
+            <md-expansion-panel class="worksheet-options__panel-display-options mat-elevation-z0">
+              <md-expansion-panel-header>
+                <md-panel-title>
+                  Display Options
+                </md-panel-title>
+              </md-expansion-panel-header>
+              <div>
+                Problems per row
+                <br>
+                <md-slider color="primary" min="1" max="10" [value]="problemsPerRow" (input)="problemsPerRowSliderChange($event)"></md-slider> {{problemsPerRow}}
+              </div>
+              <div>
+                Problem font size
+                <br>
+                <md-slider color="primary" min="1" max="6" [value]="problemFontSize" (input)="problemFontSizeSliderChange($event)"></md-slider> {{problemFontSize}}
+              </div>
+              <div>
+                Problem letter spacing
+                <br>
+                <md-slider color="primary" min="1" max="10" [value]="letterSpacing" (input)="letterSpacingSliderChange($event)"></md-slider> {{letterSpacing}}
+              </div>
+              <div>
+                Line spacing
+                <br>
+                <md-slider color="primary" min="1" max="10" [value]="lineSpacing" (input)="lineSpacingSliderChange($event)"></md-slider> {{lineSpacing}}
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="showNameLine" [(ngModel)]="worksheetService.options.showNameLine">Show name line</md-slide-toggle>
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="showDateLine" [(ngModel)]="worksheetService.options.showDateLine">Show date line</md-slide-toggle>
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="showTitle" [(ngModel)]="worksheetService.options.showTitle">Show title</md-slide-toggle>
+                <br>
+                <md-form-field *ngIf="worksheetService.options.showTitle">
+                  <input mdInput #title="ngModel" type="text" placeholder="Title" name="title" required [(ngModel)]="worksheetService.options.title">
+                  <md-error [hidden]="title.valid || title.pristine">
+                    A title must be provided
+                  </md-error>
+                </md-form-field>
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="showInstructions" [(ngModel)]="worksheetService.options.showInstructions">Show instructions</md-slide-toggle>
+                <br>
+                <md-form-field *ngIf="worksheetService.options.showInstructions">
+                  <input mdInput #instructions="ngModel" type="text" placeholder="Instructions" name="instructions" required [(ngModel)]="worksheetService.options.instructions">
+                  <md-error [hidden]="instructions.valid || instructions.pristine">
+                    Instructions must be provided
+                  </md-error>
+                </md-form-field>
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="showProblemNumbers" [(ngModel)]="worksheetService.options.showProblemNumbers">Show problem numbers</md-slide-toggle>
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="showAnswers" [(ngModel)]="worksheetService.options.showAnswers">Show answers</md-slide-toggle>
+              </div>
+              <div>
+                <md-slide-toggle color="primary" name="landscape" [(ngModel)]="worksheetService.options.landscape" mdTooltip="This is a preview only. You will have to adjust your printer settings to print in landscape mode." mdTooltipPosition="right">Landscape preview</md-slide-toggle>
+              </div>
+            </md-expansion-panel>
+          </md-accordion>
+        </md-card-content>
+      </md-card>
+    </form>
+  </div>
+  <div class="worksheet-content">
+    <md-card class="worksheet__card" [class.worksheet__card--landscape]="worksheetService.options.landscape" *ngIf="worksheetService.problems.length">
+      <md-card-content>
+        <h2 class="worksheet__name-date clearfix" *ngIf="worksheetService.options.showNameLine || worksheetService.options.showDateLine">
+          <span class="worksheet__name" *ngIf="worksheetService.options.showNameLine">Name:</span>
+          <span class="worksheet__date" *ngIf="worksheetService.options.showDateLine">Date:</span>
+        </h2>
+        <h1 class="worksheet__title" *ngIf="worksheetService.options.showTitle">{{worksheetService.options.title}}</h1>
+        <h3 class="worksheet__instructions" *ngIf="worksheetService.options.showInstructions">{{worksheetService.options.instructions}}</h3>
+        <div class="math-problems" [ngClass]="mathProblemsClasses">
+          <div class="math-problem" *ngFor="let problem of worksheetService.problems; index as i">
+            <div class="math-problem__problem">
+              <div class="math-problem__number" *ngIf="worksheetService.options.showProblemNumbers">{{i+1}}.</div>
+              <div class="math-problem__symbol">{{ problem.symbol }}</div>
+              <div class="math-problem__value" *ngFor="let value of problem.values">{{ value }}</div>
+              <div class="math-problem__answer" *ngIf="worksheetService.options.showAnswers">
+                <ng-container *ngIf="isDivisionProblem(problem)">
+                  <ng-container *ngIf="worksheetService.options.divisionOptions.showRemainders">{{problem.answerFloored}}<strong>r</strong>{{problem.remainder}}</ng-container>
+                  <ng-container *ngIf="!worksheetService.options.divisionOptions.showRemainders">{{problem.answer | number:getDivisionNumberFormat()}}</ng-container>
+                </ng-container>
+                <ng-container *ngIf="!isDivisionProblem(problem)">{{ problem.answer }}</ng-container>
+              </div>
+              <div class="math-problem__answer" *ngIf="!worksheetService.options.showAnswers">&nbsp;</div>
+            </div>
+          </div>
+        </div>
+        <div class="worksheet__id" *ngIf="worksheetService.id">Worksheet Id: {{worksheetService.id}}</div>
+      </md-card-content>
+    </md-card>
+    <div class="worksheet-display-disclaimer mat-elevation-z5 d-print-none" *ngIf="worksheetService.problems.length">
+      The view shown here is meant to simulate a printed page (8.5x11 inch standard US paper size).
+      <br>
+      Your actual printout may look different depending on a number of factors including printer settings.
+    </div>
+    <button class="worksheet__print-button d-print-none" md-fab color="accent" *ngIf="worksheetService.problems.length">
+      <md-icon class="md-24" aria-label="Print the worksheet" (click)="print()">print</md-icon>
+    </button>
+    <button class="worksheet__save-button d-print-none" md-fab color="primary" *ngIf="worksheetService.problems.length && (authService.user | async)?.uid">
+      <md-icon class="md-24" aria-label="Save the worksheet" (click)="save()">save</md-icon>
+    </button>
+  </div>
+</div>
+<div class="worksheet__generate mat-elevation-z5 d-print-none">
+  <button type="button" md-raised-button color="primary" (click)="generateWorksheet()" [disabled]="!optionsForm.form.valid">Generate Worksheet</button>
+</div>
